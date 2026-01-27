@@ -1,0 +1,37 @@
+انواع التيست 
+validation,vefication
+false positive,false negative
+sdlc
+stlc
+test level
+مين اكبر ال sdlc or stlc
+تعريف ال bug/there is actual and expected result any change between them will cuz bug or defect
+test scenario
+functional,nonfunctional test
+ticket/work item have specific duration and specific person to do it 
+شو الأشياء الي لازم تكزن موجوده او مش موجوده بال bug report/description-severty-prority-screenshot-steps to produce important
+regrition test
+smoke test
+false positive/false negitive 
+happy/sad senaroi
+good/bad senario
+why we use automition test
+selenium متى بنستخمه لشو يستخدم
+كيف نكرر التيست اكتر من مره 
+الفرق بين ال findelemnt/findelemnts متى حنستخدم كل واحد 
+get text شو هاد وشو برجع ؟ بترجع داتا تايب من نوع معين 
+ازا عندي اكتر من elemnt وبدي اضغط عليهم كلهم مرة وحده شلون ؟
+assert ازا ال actual متل ال expected
+thread of sleep / implicit الفرق بيناتهم 
+driver.quit/driver.close الفرق بيناتهم 
+تعريف ال explority testing 
+selenium /testNG الفرق بينهم 
+selemium/faramework or automation tool help you to interact with webelemnt
+testNG/test faremwork help you تحدد شو الشغلات الي بدك ياها بيفور التيست وكيف بدي اعملهم بالاضافه فيو assert بتعمل كومبير 
+locaters/x path-prtial path-swlctors-idعددهم 8 ومين اسرع وحده فيهم واقصر بينهم
+partial line text الفرق
+random /nextint/nextint with one number or two numbers
+blackbox/whitebox
+اذا عندي عناصر بشتركوا بنفس الكلاس وبدي احولهم ل css selector كيف نعملهم مع بعض
+ 
+
