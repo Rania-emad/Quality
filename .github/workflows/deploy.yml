@@ -19,6 +19,12 @@ jobs:
         working-directory: /home/ell/Quality
         run: newman run  API.postman_collection.json -e DummyJSON.postman_environment.json
 
+      - name: k6 test
+        working-directory: /home/ell/Quality
+        run: k6 run script.js
+
+
+
       - name: CPU status
         working-directory: /home/ell/Quality
         run: w
@@ -29,3 +35,4 @@ jobs:
         working-directory: /home/ell/Quality
 
         run: free -h
+
