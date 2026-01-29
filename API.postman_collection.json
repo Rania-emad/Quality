@@ -1,0 +1,1230 @@
+{
+  "info": {
+    "_postman_id": "dcad9514-a958-498d-bb05-31009f582b7b",
+    "name": "API",
+    "description": "## API Collection\n\nThis collection contains sample HTTP requests against a dummy API, demonstrating how to structure and exercise typical REST-style operations in Postman.\n\n### Authentication\nMost endpoints in this collection are public demo endpoints and do not require authentication. If you introduce auth in your own APIs, you would typically:\n- Use a bearer token in the `Authorization` header, for example:\n  ```http\n  Authorization: Bearer {{accessToken}}\n  ```\n- Or configure authentication at the collection level and let individual requests inherit it.\n\n### Environments and Variables\nUse the `{{baseUrl}}` variable (defined in an environment such as **DummyJSON**) to point requests to the correct server:\n```text\n{{baseUrl}} = https://dummyjson.com\n```\nYou can duplicate this environment to target different hosts (e.g., local or staging) by changing `baseUrl`.\n\n### Usage\n1. Select the appropriate environment (for example, **DummyJSON**).\n2. Open any request in this collection.\n3. Click **Send** to execute the request and inspect the response.\n\nYou can extend this collection by adding your own endpoints, tests, and descriptions following the same patterns used here.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51082361",
+    "_collection_link": "https://go.postman.co/collection/51082361-dcad9514-a958-498d-bb05-31009f582b7b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "login",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"accessToken\", jsonData.accessToken);\r",
+                  "pm.environment.set(\"refreshToken\", jsonData.refreshToken);\r",
+                  "\r",
+                  "pm.test(\"Login successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(jsonData).to.have.property(\"accessToken\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"refreshToken\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"emilys\",\r\n  \"password\": \"emilyspass\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate **user login** and to **store authentication tokens** for further requests.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the login request was successful.\n    \n\n---\n\n### Token Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures that the response contains both:\n    \n    - `accessToken`\n        \n    - `refreshToken`\n        \n- Confirms that the API returns the required tokens for authentication.\n    \n\n---\n\n### Environment Variable Handling\n\n- Saves the tokens to Postman environment variables:\n    \n    - `accessToken`\n        \n    - `refreshToken`\n        \n- Allows chained requests to use the tokens for authorization automatically.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- Login endpoint works correctly.\n    \n- Authentication tokens are returned and can be used in subsequent requests.\n    \n- The API supports secure, token-based workflows.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if:\n    \n    - Status code is not 200\n        \n    - Either token is missing\n        \n- Environment variables must be defined in Postman prior to running the collection."
+          },
+          "response": []
+        },
+        {
+          "name": "Authenticated User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Authenticated user fetched\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(jsonData).to.have.property(\"username\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"email\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **retrieval of the authenticated user’s profile**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the request to fetch the authenticated user was successful.\n    \n\n---\n\n### User Profile Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures the response contains essential user properties:\n    \n    - `username` – the user’s username\n        \n    - `email` – the user’s email address\n        \n\nThis ensures that the API returns the correct profile information for the authenticated user.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The authenticated user endpoint works correctly.\n    \n- The returned user data includes required fields.\n    \n- User data integrity is maintained.\n    \n\n---\n\n### Notes\n\n- Tests will fail if `username` or `email` is missing.\n    \n- The response body is parsed using `pm.response.json()`.\n    \n- Designed to validate **user profile retrieval workflows** after authentication."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "item": [
+        {
+          "name": "Get All Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Products list is not empty\", function () {\r",
+                  "    pm.expect(jsonData.products.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each product has id and title\", function () {\r",
+                  "    jsonData.products.forEach((product) => {\r",
+                  "        pm.expect(product).to.have.property(\"id\");\r",
+                  "        pm.expect(product).to.have.property(\"title\");\r",
+                  "    });\r",
+                  "  \r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "## 📌 Request Tests Documentation\n\nThis request includes automated tests written in the **Postman Tests** tab to validate the API response for fetching products.\n\n### ✅ Status Code Validation\n\n- Verifies that the API responds with **HTTP 200 OK**.\n    \n- Ensures the request was processed successfully.\n    \n\n### Products List Validation\n\n- Confirms that the response contains a `products` array.\n    \n- Checks that the `products` list is **not empty**, ensuring data is returned.\n    \n\n### Product Object Validation\n\n- Iterates through each product in the `products` array.\n    \n- Verifies that every product object includes:\n    \n    - `id`\n        \n    - `title`\n        \n\n### Purpose\n\nThese tests ensure:\n\n- The API is reachable and successful.\n    \n- Product data exists in the response.\n    \n- Each product follows the expected minimal structure.\n    \n\n### Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests will fail if the structure changes or if the product list is empty."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.test(\"Product has id, title, and price\", function () {\r",
+                  "        pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "        pm.expect(jsonData).to.have.property(\"title\");\r",
+                  "        pm.expect(jsonData).to.have.property(\"price\");\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"Error message is returned\", function () {\r",
+                  "        pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes conditional tests to validate both **successful** and **error** API responses.\n\n---\n\n### ✅ Successful Response (HTTP 200)\n\nWhen the API returns a **200 OK** status code, the test verifies that the response body contains a valid product object with the following required properties:\n\n- `id`\n    \n- `title`\n    \n- `price`\n    \n\nThis ensures that the product data is complete and follows the expected structure.\n\n---\n\n### ❌ Error Response (Non-200)\n\nIf the response status code is **not 200**, the test validates that:\n\n- An error response is returned.\n    \n- The response body contains a `message` field describing the error.\n    \n\n---\n\n### 🎯 Purpose\n\nThese tests ensure:\n\n- Correct product data is returned on successful requests.\n    \n- Proper error handling and messaging for failed requests.\n    \n- Consistent API behavior across different response scenarios.\n    \n\n---\n\n### 🛠️ Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests are executed conditionally based on the HTTP status code.\n    \n- Missing required fields will cause the test to fail."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Search results contain products\", function () {\r",
+                  "    pm.expect(jsonData.products.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each product has id and title\", function () {\r",
+                  "    jsonData.products.forEach((product) => {\r",
+                  "        pm.expect(product).to.have.property(\"id\");\r",
+                  "        pm.expect(product).to.have.property(\"title\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/search?q=phone",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "phone"
+                }
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the API response for **product search results**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response status code is **200 OK**.\n    \n- Confirms that the request was processed successfully.\n    \n\n---\n\n### Search Results Validation\n\n- Ensures the response contains a `products` array.\n    \n- Confirms that the `products` list is **not empty**, indicating that search results were returned.\n    \n\n---\n\n### Product Structure Validation\n\n- Iterates through each product in the `products` array.\n    \n- Verifies that every product object contains the required properties:\n    \n    - `id`\n        \n    - `title`\n        \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The search endpoint responds successfully.\n    \n- Product search results are returned.\n    \n- Each product follows the expected minimal data structure.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if no products are returned or if required fields are missing.\n    \n- Designed to validate basic search response integrity."
+          },
+          "response": []
+        },
+        {
+          "name": "Update product (Put)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "pm.response.to.have.status (200);\r",
+                  "});\r",
+                  "pm. test(\"Product updated correctly\", function () {\r",
+                  "pm.expect(jsonData).to.have.property(\"title\", \"Updated Product\");\r",
+                  "pm.expect(jsonData).to.have.property(\"price\", 120);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Updated Product\",\r\n    \"price\": 120,\r\n    \"description\": \"This product was updated via PUT\",\r\n    \"category\": \"electronics\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful update of a product**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the update request was processed successfully.\n    \n\n---\n\n### Product Update Validation\n\n- Ensures the response body reflects the updated product data.\n    \n- Verifies that:\n    \n    - The `title` is updated to **\"Updated Product\"**\n        \n    - The `price` is updated to **120**\n        \n\nThis confirms that the product update was applied correctly on the server.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The update endpoint responds successfully.\n    \n- Updated values are correctly saved and returned.\n    \n- The API maintains data consistency after updates.\n    \n\n---\n\n### Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests will fail if the product values do not match the expected updated data.\n    \n- Designed to validate update operations in CRUD workflows."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Product price updated correctly\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"price\", 150);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"price\": 150\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful update of a product price**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the request was processed successfully.\n    \n\n---\n\n### Product Price Validation\n\n- Ensures the response body contains the updated product data.\n    \n- Verifies that the `price` field is updated to **150**.\n    \n\nThis confirms that the product price was successfully updated on the server.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The price update endpoint works correctly.\n    \n- Updated pricing data is accurately saved and returned.\n    \n- The API response reflects the latest product state.\n    \n\n---\n\n### Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests will fail if the price does not match the expected value.\n    \n- Designed for validating partial updates in CRUD operations."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is valid\", function () {\r",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "\r",
+                  "    pm.test(\"Product is marked as deleted\", function () {\r",
+                  "        pm.expect(jsonData).to.have.property(\"isDeleted\", true);\r",
+                  "    });\r",
+                  "\r",
+                  "} else if (pm.response.code === 404) {\r",
+                  "\r",
+                  "    pm.test(\"Product not found as expected\", function () {\r",
+                  "        pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "        pm.expect(jsonData.message).to.include(\"not found\");\r",
+                  "    });\r",
+                  "\r",
+                  "} else {\r",
+                  "\r",
+                  "    pm.test(\"Unexpected status code\", function () {\r",
+                  "        pm.expect.fail(`Unexpected status code: ${pm.response.code}`);\r",
+                  "    });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes conditional automated tests to validate both **successful product deletion** and **error scenarios**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the response status code is either:\n    \n    - **200 OK** (product deleted successfully), or\n        \n    - **404 Not Found** (product does not exist)\n        \n\n---\n\n### Successful Deletion Validation (HTTP 200)\n\nWhen the response status code is **200 OK**, the following validations are performed:\n\n- Confirms the product is marked as deleted:\n    \n    - `isDeleted` is set to **true**\n        \n    - `deletedOn` field exists\n        \n- Validates that `deletedOn`:\n    \n    - Is a valid date\n        \n    - Represents a **past timestamp**, not a future date\n        \n\nThis ensures the deletion action was completed correctly and recorded properly.\n\n---\n\n### Product Not Found Validation (HTTP 404)\n\nWhen the response status code is **404 Not Found**:\n\n- Verifies the response contains a `message` field\n    \n- Confirms the message indicates that the product was **not found**\n    \n\nThis ensures the API handles missing resources correctly.\n\n---\n\n### Unexpected Status Handling\n\n- Any response status code other than **200** or **404** will cause the test to fail.\n    \n- This helps detect unexpected or incorrect API behavior.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- Product deletion is processed correctly.\n    \n- Deletion metadata is accurate and valid.\n    \n- Proper error responses are returned for non-existent products.\n    \n- Unexpected API responses are caught early.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Date validation is performed using JavaScript `Date` objects.\n    \n- Designed to validate delete operations in CRUD workflows."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Product (Invalid-ID)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message exists\", function () {\r",
+                  "    let res = pm.response.json();\r",
+                  "    pm.expect(res).to.have.property(\"message\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/-1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "-1"
+              ]
+            },
+            "description": "### Status Code Validation\n\n- Verifies that the API response returns **HTTP 404 Not Found**.\n    \n- Confirms that the requested resource does not exist.\n    \n\n---\n\n### Error Message Validation\n\n- Ensures the response body contains a `message` field.\n    \n- Confirms that an error description is returned to explain the failure.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The API correctly handles requests for non-existent resources.\n    \n- Proper HTTP status codes are returned.\n    \n- Meaningful error messages are provided to the client.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if the status code is not **404** or if the `message` field is missing.\n    \n- Designed for validating negative scenarios and error responses."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let res = pm.response.json();\r",
+                  "pm.test(\"Product created successfully\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "    pm.expect(res.title).to.eql(pm.environment.get(\"productTitle\"));\r",
+                  "    pm.expect(res.price).to.eql(pm.environment.get(\"productPrice\"));\r",
+                  "});\r",
+                  "\r",
+                  "// Save product ID for chaining\r",
+                  "pm.environment.set(\"productId\", res.id);\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "if (response.id) {\r",
+                  "    pm.environment.set(\"productId\", response.id);\r",
+                  "    console.log(\"Product ID saved\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Random helpers\r",
+                  "const rand = Math.floor(Math.random() * 100000);\r",
+                  "const price = Math.floor(Math.random() * 500) + 10;\r",
+                  "\r",
+                  "// Generate dynamic product data\r",
+                  "pm.environment.set(\"productTitle\", `QA Product ${rand}`);\r",
+                  "pm.environment.set(\"productDescription\", `Auto-generated product for testing - ${rand}`);\r",
+                  "pm.environment.set(\"productPrice\", price);\r",
+                  "\r",
+                  "// Optional: keep last generated values (for debugging/reporting)\r",
+                  "pm.environment.set(\"lastProductPayload\", JSON.stringify({\r",
+                  "    title: pm.environment.get(\"productTitle\"),\r",
+                  "    description: pm.environment.get(\"productDescription\"),\r",
+                  "    price: pm.environment.get(\"productPrice\"),\r",
+                  "    category: \"beauty\"\r",
+                  "}));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"{{productTitle}}\",\r\n  \"description\": \"{{productDescription}}\",\r\n  \"price\": {{productPrice}},\r\n  \"category\": \"beauty\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "add"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful creation of a product** and to **store the product ID for chained requests**.\n\n---\n\n### Product Creation Validation (HTTP 201)\n\n- Verifies that the API response returns **HTTP 201 Created**.\n    \n- Confirms that the created product’s data matches the request input:\n    \n    - `title` matches the `productTitle` stored in the environment.\n        \n    - `price` matches the `productPrice` stored in the environment.\n        \n\nThis ensures the product was created with the correct values.\n\n---\n\n### Environment Variable Handling (Chaining)\n\n- Extracts the `id` from the response.\n    \n- Saves the product ID as an environment variable named `productId`.\n    \n- Enables chaining of requests such as **Get / Update / Delete Product** using the same ID.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- Product creation works correctly.\n    \n- Returned data matches the submitted payload.\n    \n- The product ID is persisted for use in subsequent API requests.\n    \n- End-to-end CRUD workflows can be executed seamlessly.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Environment variables must be defined before running the collection.\n    \n- The test will fail if the product ID is not returned in the response."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quotes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Quotes retrieved\", () => {\r",
+                  "    pm.expect(pm.response.code).to.eql(200);\r",
+                  "    pm.expect(pm.response.json().quotes.length).to.be.above(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quotes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful retrieval of quotes**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the request was processed successfully.\n    \n\n---\n\n### Quotes List Validation\n\n- Ensures the response body contains a `quotes` array.\n    \n- Confirms that the `quotes` list is **not empty**, indicating that quotes were returned.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The quotes endpoint responds successfully.\n    \n- Quote data is available in the response.\n    \n- The API returns meaningful content rather than an empty result.\n    \n\n---\n\n### Notes\n\n- The response body is accessed using `pm.response.json()`.\n    \n- Tests will fail if the `quotes` array is missing or empty.\n    \n- Designed to validate list retrieval endpoints."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get All Carts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Carts list is not empty\", function () {\r",
+                  "    pm.expect(jsonData.carts.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each cart has id and products\", function () {\r",
+                  "    jsonData.carts.forEach((cart) => {\r",
+                  "        pm.expect(cart).to.have.property(\"id\");\r",
+                  "        pm.expect(cart).to.have.property(\"products\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **retrieval of shopping carts**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the request was processed successfully.\n    \n\n---\n\n### Carts List Validation\n\n- Ensures the response contains a `carts` array.\n    \n- Confirms that the `carts` list is **not empty**, indicating that carts exist.\n    \n\n---\n\n### Cart Structure Validation\n\n- Iterates through each cart in the `carts` array.\n    \n- Verifies that every cart object contains the required properties:\n    \n    - `id`\n        \n    - `products`\n        \n\nThis ensures each cart has a valid identifier and associated products.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The carts endpoint responds successfully.\n    \n- Cart data is returned and correctly structured.\n    \n- The API maintains integrity of cart objects.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if the `carts` array is empty or if required fields are missing.\n    \n- Designed to validate list retrieval and data structure for carts."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cart has id and products\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"products\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cart has total field\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"total\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/{{cartId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "{{cartId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **retrieval of a single cart**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the request was processed successfully.\n    \n\n---\n\n### Cart Structure Validation\n\n- Ensures the response contains the main cart object with required properties:\n    \n    - `id` – the unique identifier of the cart\n        \n    - `products` – an array of products in the cart\n        \n    - `total` – the total price of all products in the cart\n        \n\nThis ensures the cart data is complete and properly structured.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The cart retrieval endpoint responds successfully.\n    \n- The returned cart object contains essential fields for frontend or further processing.\n    \n- The API maintains correct structure for individual cart objects.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if any required fields are missing.\n    \n- Designed to validate **single cart retrieval** in CRUD workflows."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cart has id and products\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"products\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cart belongs to a user\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property(\"userId\", 1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"products\": [\r\n    {\r\n      \"id\": 1,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"id\": 2,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "add"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **creation of a new cart**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 201 Created**.\n    \n- Confirms that the cart creation request was processed successfully.\n    \n\n---\n\n### Cart Structure Validation\n\n- Ensures the response contains the main cart object with required properties:\n    \n    - `id` – unique identifier of the cart\n        \n    - `products` – array of products included in the cart\n        \n\nThis ensures that the created cart has the correct structure.\n\n---\n\n### User Association Validation\n\n- Verifies that the cart belongs to the correct user:\n    \n    - `userId` equals **1**\n        \n\nThis ensures the cart is associated with the expected user.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The cart creation endpoint works correctly.\n    \n- The returned cart object is properly structured.\n    \n- The cart is linked to the intended user.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if any required field is missing or if `userId` is incorrect.\n    \n- Designed to validate **cart creation workflows** in CRUD operations."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart ( PUT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cart has updated products\", function () {\r",
+                  "    pm.expect(jsonData.products.length).to.equal(2);\r",
+                  "    pm.expect(jsonData.products[0]).to.have.property(\"id\", 3);\r",
+                  "    pm.expect(jsonData.products[0]).to.have.property(\"quantity\", 4);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"products\": [\r\n    {\r\n      \"id\": 3,\r\n      \"quantity\": 4\r\n    },\r\n    {\r\n      \"id\": 5,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/{{cartId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "{{cartId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **update of a cart’s products**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the cart update request was processed successfully.\n    \n\n---\n\n### Cart Products Validation\n\n- Ensures the cart object in the response contains the updated products.\n    \n- Validates that:\n    \n    - The `products` array has exactly **2 items**.\n        \n    - The first product has:\n        \n        - `id` equal to **3**\n            \n        - `quantity` equal to **4**\n            \n\nThis ensures that product updates (including quantities) are correctly applied.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The cart update endpoint works correctly.\n    \n- Product data within the cart is updated as intended.\n    \n- The API returns the correct structure and values for updated cart objects.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if the number of products or the updated values do not match expectations.\n    \n- Designed to validate **partial updates in CRUD workflows** for carts."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product To Cart (PATCH)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"New product added to cart\", function () {\r",
+                  "    let found = jsonData.products.some(p => p.id === 8 && p.quantity === 1);\r",
+                  "    pm.expect(found).to.be.true;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"products\": [\r\n    {\r\n      \"id\": 8,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/{{cartId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "{{cartId}}"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **addition of a new product to a cart**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the request to add a product to the cart was processed successfully.\n    \n\n---\n\n### Cart Product Addition Validation\n\n- Ensures that the newly added product exists in the cart.\n    \n- Validates that:\n    \n    - A product with `id` equal to **8** is present.\n        \n    - The `quantity` of this product is **1**.\n        \n\nThis ensures that the product was correctly added to the cart.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- Products can be successfully added to a cart.\n    \n- The API returns the updated cart data reflecting the addition.\n    \n- Cart integrity is maintained after the update.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if the new product is missing or has an incorrect quantity.\n    \n- Designed to validate **add-to-cart functionality** in CRUD workflows."
+          },
+          "response": []
+        },
+        {
+          "name": "Add random carts",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"randomProduct1\", Math.floor(Math.random() * 30) + 1);\r",
+                  "pm.environment.set(\"randomProduct2\", Math.floor(Math.random() * 30) + 1);\r",
+                  "pm.environment.set(\"randomProduct3\", Math.floor(Math.random() * 30) + 1);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Cart created successfully\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "    let jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.products.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Total quantity is correct\", () => {\r",
+                  "    let jsonData = pm.response.json();\r",
+                  "    let totalQty = jsonData.products.reduce((sum, p) => sum + p.quantity, 0);\r",
+                  "    pm.expect(totalQty).to.be.above(5);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time < 400ms\", () => {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"products\": [\r\n    { \"id\": {{randomProduct1}}, \"quantity\": 2 },\r\n    { \"id\": {{randomProduct2}}, \"quantity\": 5 },\r\n    { \"id\": {{randomProduct3}}, \"quantity\": 1 }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "add"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **creation of a cart** and the integrity of its products, as well as performance checks.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 201 Created**.\n    \n- Confirms that the cart was successfully created.\n    \n\n---\n\n### Cart Products Validation\n\n- Ensures the `products` array in the response is **not empty**, confirming that the cart contains at least one product.\n    \n\n---\n\n### Total Quantity Validation\n\n- Calculates the total quantity of all products in the cart.\n    \n- Verifies that the total quantity is **greater than 5**.\n    \n- Ensures that the cart meets expected quantity constraints.\n    \n\n---\n\n### Performance Validation\n\n- Checks that the **response time is below 400ms**.\n    \n- Ensures the API responds quickly and meets performance requirements.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The cart creation endpoint works correctly.\n    \n- Products are properly added and quantities are accurate.\n    \n- The API response is fast enough for a smooth user experience.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if:\n    \n    - Status code is not 201\n        \n    - Products array is empty\n        \n    - Total quantity is 5 or less\n        \n    - Response time exceeds 400ms\n        \n- Designed to validate **cart creation functionality** and **basic performance metrics**."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Cart deleted successfully\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    let jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.isDeleted).to.eql(true);\r",
+                  "    pm.expect(jsonData.id).to.eql(1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "1"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful deletion of a cart**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms that the delete request was processed successfully.\n    \n\n---\n\n### Cart Deletion Validation\n\n- Ensures the cart object in the response confirms the deletion.\n    \n- Validates that:\n    \n    - `isDeleted` is **true**, indicating the cart was successfully deleted.\n        \n    - `id` equals **1**, confirming the correct cart was deleted.\n        \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The cart deletion endpoint works correctly.\n    \n- The response accurately reflects the deleted cart.\n    \n- Only the intended cart is deleted.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Tests will fail if `isDeleted` is not true or the cart ID does not match.\n    \n- Designed to validate **cart deletion workflows** in CRUD operations."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete invalid cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Deleting non-existent cart returns 404\", () => {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Proper error message returned\", () => {\r",
+                  "    pm.expect(jsonData).to.have.property(\"message\");\r",
+                  "    pm.expect(jsonData.message.toLowerCase()).to.include(\"not found\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "99999"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request validates the **deletion of a non-existent cart** and ensures proper error handling by the API.\n\n---\n\n### Status Code Validation\n\n- Verifies that the response returns **HTTP 404 Not Found**.\n    \n- Confirms that the API correctly rejects attempts to delete carts that do not exist.\n    \n\n---\n\n### Error Message Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures the response contains a `message` property.\n    \n- Checks that the error message includes `\"not found\"` (case-insensitive).\n    \n- Confirms that the API provides meaningful feedback for missing carts.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The API handles deletion of non-existent carts correctly.\n    \n- Proper status codes and messages are returned for edge cases.\n    \n- Application workflows involving cart deletion are validated.\n    \n\n---\n\n### Notes\n\n- DELETE https://dummyjson.com/carts/9999\n    \n- **Request Body:** Not required.\n    \n- Tests fail if:\n    \n    - Status code is not 404\n        \n    - Response body does not include a `message`"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Users List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Users list valid\", () => {\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response.users.length).to.be.above(0);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **retrieval of users list**.\n\n---\n\n### Users List Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures that the `users` array exists and is **not empty**.\n    \n- Confirms that the API returns at least one user in the list.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The users endpoint is functioning correctly.\n    \n- The API returns valid user data.\n    \n- The response contains meaningful results rather than an empty list.\n    \n\n---\n\n### Notes\n\n- Tests will fail if the `users` array is missing or empty.\n    \n- Designed to validate **list retrieval endpoints** in user management workflows."
+          },
+          "response": []
+        },
+        {
+          "name": "User Valid Email",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"User email valid\", () => {\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response.email).to.include(\"@\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "1"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **email format of a single user**.\n\n---\n\n### User Email Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures that the `email` field contains the **\"@\"** character.\n    \n- Confirms that the user email follows a basic valid format.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The API returns a properly formatted email for the user.\n    \n- User data integrity is maintained.\n    \n- Basic validation rules are enforced for user attributes.\n    \n\n---\n\n### Notes\n\n- Tests will fail if the `email` field is missing or does not include `\"@\"`.\n    \n- Designed to validate **individual user data fields** in API responses."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Proper error message returned\", () => {\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response.message.toLowerCase()).to.include(\"not found\");\r",
+                  "});\r",
+                  "pm.test(\"Invalid user blocked\", () => {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response).to.have.property(\"message\");\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "9999"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **API’s error handling for a non-existent or invalid user**.\n\n---\n\n### Error Message Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures that the `message` field contains the text `\"not found\"` (case-insensitive).\n    \n- Confirms that the API provides a meaningful explanation for the error.\n    \n\n---\n\n### Invalid User Status Validation\n\n- Verifies that the API response returns **HTTP 404 Not Found**.\n    \n- Ensures that the response includes a `message` property indicating the failure.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The API correctly handles requests for users that do not exist.\n    \n- Proper HTTP status codes are returned.\n    \n- Meaningful error messages are provided to clients.\n    \n\n---\n\n### Notes\n\n- Tests will fail if:\n    \n    - Status code is not **404**.\n        \n    - The `message` field is missing or does not include `\"not found\"`.\n        \n- Designed to validate **negative scenarios** and **error responses** for user endpoints."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "if (!pm.environment.get(\"baseUrl\")) {\r",
+          "    pm.environment.set(\"baseUrl\", \"https://dummyjson.com\");\r",
+          "}\r",
+          "\r",
+          "if (!pm.environment.get(\"random\")) {\r",
+          "    pm.environment.set(\"random\", Math.floor(Math.random() * 100000));\r",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test(\"Response time is acceptable\", () => {\r",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+          "});\r",
+          "\r",
+          "pm.test(\"Response is JSON\", () => {\r",
+          "    pm.response.to.have.header(\"Content-Type\");\r",
+          "    pm.expect(\r",
+          "        pm.response.headers.get(\"Content-Type\")\r",
+          "    ).to.include(\"application/json\");\r",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://dummyjson.com"
+    },
+    {
+      "key": "productId",
+      "value": "1"
+    },
+    {
+      "key": "cartId",
+      "value": "1"
+    },
+    {
+      "key": "productTitle",
+      "value": "Test Product"
+    },
+    {
+      "key": "productPrice",
+      "value": "99.99"
+    },
+    {
+      "key": "productDescription",
+      "value": "Sample description"
+    },
+    {
+      "key": "category",
+      "value": "beauty"
+    },
+    {
+      "key": "updatedPrice",
+      "value": ""
+    },
+    {
+      "key": "expectedEmails",
+      "value": ""
+    }
+  ]
+}
