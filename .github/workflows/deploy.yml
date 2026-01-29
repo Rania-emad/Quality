@@ -15,10 +15,17 @@ jobs:
         run: |
           git fetch origin main
           git reset --hard origin/main
+      - name: newman test
+        working-directory: /home/ell/Quality
+        run: newman run  API.postman_collection.json -e DummyJSON.postman_environment.json
+
       - name: CPU status
         working-directory: /home/ell/Quality
         run: w
+        
+        
 
       - name: Ram status
         working-directory: /home/ell/Quality
+
         run: free -h
