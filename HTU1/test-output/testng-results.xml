@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="8" passed="8" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-02-04T17:19:40 EET" name="Default suite" finished-at="2026-02-04T17:20:18 EET" duration-ms="38521">
+    <groups>
+    </groups>
+    <test started-at="2026-02-04T17:19:40 EET" name="Default test" finished-at="2026-02-04T17:20:18 EET" duration-ms="38521">
+      <class name="SauceDemo.MyTestCases">
+        <test-method is-config="true" signature="mySetUp()[pri:0, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:40 EET" name="mySetUp" finished-at="2026-02-04T17:19:42 EET" duration-ms="2164" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- mySetUp -->
+        <test-method signature="login()[pri:1, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:42 EET" name="login" finished-at="2026-02-04T17:19:43 EET" duration-ms="1114" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method signature="aDDTocartbtn()[pri:2, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:43 EET" name="aDDTocartbtn" finished-at="2026-02-04T17:19:44 EET" duration-ms="1333" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- aDDTocartbtn -->
+        <test-method signature="removebtn()[pri:3, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:44 EET" name="removebtn" finished-at="2026-02-04T17:19:48 EET" duration-ms="4118" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- removebtn -->
+        <test-method signature="sorting()[pri:4, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:48 EET" name="sorting" finished-at="2026-02-04T17:19:53 EET" duration-ms="4880" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- sorting -->
+        <test-method signature="cArt()[pri:5, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:53 EET" name="cArt" finished-at="2026-02-04T17:19:56 EET" duration-ms="2291" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- cArt -->
+        <test-method signature="yourINFO()[pri:6, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:19:56 EET" name="yourINFO" finished-at="2026-02-04T17:20:02 EET" duration-ms="5921" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- yourINFO -->
+        <test-method signature="addanotherprodect()[pri:7, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:20:02 EET" name="addanotherprodect" finished-at="2026-02-04T17:20:11 EET" duration-ms="9418" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- addanotherprodect -->
+        <test-method signature="logout()[pri:8, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:20:11 EET" name="logout" finished-at="2026-02-04T17:20:16 EET" duration-ms="4817" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- logout -->
+        <test-method is-config="true" signature="AfterMyTest()[pri:0, instance:SauceDemo.MyTestCases@2f48b3d2]" started-at="2026-02-04T17:20:16 EET" name="AfterMyTest" finished-at="2026-02-04T17:20:18 EET" duration-ms="2224" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- AfterMyTest -->
+      </class> <!-- SauceDemo.MyTestCases -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
