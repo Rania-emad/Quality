@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "61d6d311-7fdd-4eab-b869-95d72aa1a62b",
+    "name": "DummyJson Bug",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51082361",
+    "_collection_link": "https://go.postman.co/collection/51082361-61d6d311-7fdd-4eab-b869-95d72aa1a62b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "invalid null price (bug)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();\r",
+              "\r",
+              "if (pm.response.code === 200) {\r",
+              "    pm.test(\"BUG: API accepted null price\", function () {\r",
+              "        pm.expect.fail(\"API should reject null price but it accepted it\");\r",
+              "    });\r",
+              "} else {\r",
+              "    pm.test(\"Null price rejected correctly\", function () {\r",
+              "        pm.expect(pm.response.code).to.equal(400);\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Null price\",\r\n  \"price\":null,\r\n  \"description\": \"Null price test\",\r\n  \"category\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "add"
+          ]
+        },
+        "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate that the API rejects null price values during product creation.\n\n---\n\n### Status Code Validation\n\n• Ensures the API does not return 200 OK or 201 Created for invalid price input.  \n• Confirms the request is properly rejected.\n\n---\n\n### Purpose\n\nThese tests ensure that:  \n• Nullprices are not accepted.  \n• Business rules are enforced.  \n• Invalid data does not result in a successful response.\n\n---\n\n### Notes\n\n• Status code is accessed using pm.response.code.  \n• The test fails if the API accepts a negative price.  \n• Designed for negative testing scenarios."
+      },
+      "response": []
+    },
+    {
+      "name": "invalid  prices (bug)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();\r",
+              "\r",
+              "\r",
+              "if (pm.response.code === 200) {\r",
+              "    pm.test(\"BUG: API accepted string price\", function () {\r",
+              "        pm.expect.fail(\"API should reject string price but it accepted it\");\r",
+              "    });\r",
+              "} else {\r",
+              "    pm.test(\"Invalid prices rejected correctly\", function () {\r",
+              "        pm.expect(pm.response.code).to.equal(400);\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"String price\",\r\n  \"price\": \"abc\",\r\n  \"description\": \"Invalid price type\",\r\n  \"category\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "add"
+          ]
+        },
+        "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate that the API rejects string price values during product creation.\n\n---\n\n### Status Code Validation\n\n• Ensures the API does not return 200 OK or 201 Created for invalid price input.  \n• Confirms the request is properly rejected.\n\n---\n\n### Purpose\n\nThese tests ensure that:  \n• String prices are not accepted.  \n• Business rules are enforced.  \n• Invalid data does not result in a successful response.\n\n---\n\n### Notes\n\n• Status code is accessed using pm.response.code.  \n• The test fails if the API accepts a negative price.  \n• Designed for negative testing scenarios."
+      },
+      "response": []
+    },
+    {
+      "name": "invalid zero price (bug)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();\r",
+              "\r",
+              "if (pm.response.code === 200) {\r",
+              "    pm.test(\"BUG: API accepted zero price\", function () {\r",
+              "        pm.expect.fail(\"API should reject zero price but it accepted it\");\r",
+              "    });\r",
+              "} else {\r",
+              "    pm.test(\"Zero price rejected correctly\", function () {\r",
+              "        pm.expect(pm.response.code).to.equal(400);\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Zero Price\",\r\n  \"price\": 0,\r\n  \"description\": \"Zero price test\",\r\n  \"category\": \"test\"\r\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "invalid negative price (bug)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();\r",
+              "\r",
+              "if (pm.response.code === 200) {\r",
+              "    pm.test(\"BUG: API accepted negative price\", function () {\r",
+              "        pm.expect.fail(\"API should reject negative price but it accepted it\");\r",
+              "    });\r",
+              "} else {\r",
+              "    pm.test(\"Negative price rejected correctly\", function () {\r",
+              "        pm.expect(pm.response.code).to.equal(400);\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Negative Price\",\r\n  \"price\": -100,\r\n  \"description\": \"Negative price test\",\r\n  \"category\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/add",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "add"
+          ]
+        },
+        "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate that the API rejects negative price values during product creation.\n\n---\n\n### Status Code Validation\n\n• Ensures the API does not return 200 OK or 201 Created for invalid price input.  \n• Confirms the request is properly rejected.\n\n---\n\n### Purpose\n\nThese tests ensure that:  \n• Negative prices are not accepted.  \n• Business rules are enforced.  \n• Invalid data does not result in a successful response.\n\n---\n\n### Notes\n\n• Status code is accessed using pm.response.code.  \n• The test fails if the API accepts a negative price.  \n• Designed for negative testing scenarios."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
