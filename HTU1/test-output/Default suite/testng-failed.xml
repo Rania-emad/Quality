@@ -5,9 +5,13 @@
     <classes>
       <class name="SauceDemo.MyTestCases">
         <methods>
-          <include name="checkout"/>
-          <include name="mySetup"/>
-          <include name="AfterFinishingTheTest"/>
+          <include name="addanotherprodect"/>
+          <include name="takeScreenshotOnFailure"/>
+          <include name="cArt"/>
+          <include name="AfterMyTest"/>
+          <include name="yourINFO"/>
+          <include name="mySetUp"/>
+          <include name="sorting"/>
         </methods>
       </class> <!-- SauceDemo.MyTestCases -->
     </classes>
