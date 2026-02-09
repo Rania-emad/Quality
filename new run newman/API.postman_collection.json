@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "dcad9514-a958-498d-bb05-31009f582b7b",
     "name": "API",
-    "description": "## API Collection\n\nThis collection contains sample HTTP requests against a dummy API, demonstrating how to structure and exercise typical REST-style operations in Postman.\n\n### Authentication\nMost endpoints in this collection are public demo endpoints and do not require authentication. If you introduce auth in your own APIs, you would typically:\n- Use a bearer token in the `Authorization` header, for example:\n  ```http\n  Authorization: Bearer {{accessToken}}\n  ```\n- Or configure authentication at the collection level and let individual requests inherit it.\n\n### Environments and Variables\nUse the `{{baseUrl}}` variable (defined in an environment such as **DummyJSON**) to point requests to the correct server:\n```text\n{{baseUrl}} = https://dummyjson.com\n```\nYou can duplicate this environment to target different hosts (e.g., local or staging) by changing `baseUrl`.\n\n### Usage\n1. Select the appropriate environment (for example, **DummyJSON**).\n2. Open any request in this collection.\n3. Click **Send** to execute the request and inspect the response.\n\nYou can extend this collection by adding your own endpoints, tests, and descriptions following the same patterns used here.",
+    "description": "## API Collection\n\nThis collection contains sample HTTP requests against a dummy API, demonstrating how to structure and exercise typical REST-style operations in Postman.\n\n### Authentication\n\nMost endpoints in this collection are public demo endpoints and do not require authentication. If you introduce auth in your own APIs, you would typically:\n\n- Use a bearer token in the `Authorization` header, for example:\n    \n    ``` http\n    Authorization: Bearer {{accessToken}}\n    \n     ```\n    \n- Or configure authentication at the collection level and let individual requests inherit it.\n    \n\n### Environments and Variables\n\nUse the `{{baseUrl}}` variable (defined in an environment such as **DummyJSON**) to point requests to the correct server:\n\n``` text\n{{baseUrl}} = https://dummyjson.com\n\n ```\n\nYou can duplicate this environment to target different hosts (e.g., local or staging) by changing `baseUrl`.\n\n### Usage\n\n1. Select the appropriate environment (for example, **DummyJSON**).\n    \n2. Open any request in this collection.\n    \n3. Click **Send** to execute the request and inspect the response.\n    \n\nYou can extend this collection by adding your own endpoints, tests, and descriptions following the same patterns used here.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "51082361",
     "_collection_link": "https://go.postman.co/collection/51082361-dcad9514-a958-498d-bb05-31009f582b7b?source=collection_link"
@@ -228,19 +228,26 @@
                 "packages": {},
                 "requests": {}
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
             }
           ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products/{{productId}}",
+              "raw": "{{baseUrl}}/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "products",
-                "{{productId}}"
+                "1"
               ]
             },
             "description": "## Request Tests Documentation\n\nThis request includes conditional tests to validate both **successful** and **error** API responses.\n\n---\n\n### ✅ Successful Response (HTTP 200)\n\nWhen the API returns a **200 OK** status code, the test verifies that the response body contains a valid product object with the following required properties:\n\n- `id`\n    \n- `title`\n    \n- `price`\n    \n\nThis ensures that the product data is complete and follows the expected structure.\n\n---\n\n### ❌ Error Response (Non-200)\n\nIf the response status code is **not 200**, the test validates that:\n\n- An error response is returned.\n    \n- The response body contains a `message` field describing the error.\n    \n\n---\n\n### 🎯 Purpose\n\nThese tests ensure:\n\n- Correct product data is returned on successful requests.\n    \n- Proper error handling and messaging for failed requests.\n    \n- Consistent API behavior across different response scenarios.\n    \n\n---\n\n### 🛠️ Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests are executed conditionally based on the HTTP status code.\n    \n- Missing required fields will cause the test to fail."
@@ -335,65 +342,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/products/{{productId}}",
+              "raw": "{{baseUrl}}/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "products",
-                "{{productId}}"
+                "1"
               ]
             },
             "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful update of a product**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the update request was processed successfully.\n    \n\n---\n\n### Product Update Validation\n\n- Ensures the response body reflects the updated product data.\n    \n- Verifies that:\n    \n    - The `title` is updated to **\"Updated Product\"**\n        \n    - The `price` is updated to **120**\n        \n\nThis confirms that the product update was applied correctly on the server.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The update endpoint responds successfully.\n    \n- Updated values are correctly saved and returned.\n    \n- The API maintains data consistency after updates.\n    \n\n---\n\n### Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests will fail if the product values do not match the expected updated data.\n    \n- Designed to validate update operations in CRUD workflows."
-          },
-          "response": []
-        },
-        {
-          "name": "Update Product (PATCH)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonData = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"Status code is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"Product price updated correctly\", function () {\r",
-                  "    pm.expect(jsonData).to.have.property(\"price\", 150);\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"price\": 150\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/products/{{productId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "products",
-                "{{productId}}"
-              ]
-            },
-            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **successful update of a product price**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the API response returns **HTTP 200 OK**.\n    \n- Confirms the request was processed successfully.\n    \n\n---\n\n### Product Price Validation\n\n- Ensures the response body contains the updated product data.\n    \n- Verifies that the `price` field is updated to **150**.\n    \n\nThis confirms that the product price was successfully updated on the server.\n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The price update endpoint works correctly.\n    \n- Updated pricing data is accurately saved and returned.\n    \n- The API response reflects the latest product state.\n    \n\n---\n\n### Notes\n\n- The response is parsed using `pm.response.json()`.\n    \n- Tests will fail if the price does not match the expected value.\n    \n- Designed for validating partial updates in CRUD operations."
           },
           "response": []
         },
@@ -441,13 +399,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/products/{{productId}}",
+              "raw": "{{baseUrl}}/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "products",
-                "{{productId}}"
+                "1"
               ]
             },
             "description": "## Request Tests Documentation\n\nThis request includes conditional automated tests to validate both **successful product deletion** and **error scenarios**.\n\n---\n\n### Status Code Validation\n\n- Verifies that the response status code is either:\n    \n    - **200 OK** (product deleted successfully), or\n        \n    - **404 Not Found** (product does not exist)\n        \n\n---\n\n### Successful Deletion Validation (HTTP 200)\n\nWhen the response status code is **200 OK**, the following validations are performed:\n\n- Confirms the product is marked as deleted:\n    \n    - `isDeleted` is set to **true**\n        \n    - `deletedOn` field exists\n        \n- Validates that `deletedOn`:\n    \n    - Is a valid date\n        \n    - Represents a **past timestamp**, not a future date\n        \n\nThis ensures the deletion action was completed correctly and recorded properly.\n\n---\n\n### Product Not Found Validation (HTTP 404)\n\nWhen the response status code is **404 Not Found**:\n\n- Verifies the response contains a `message` field\n    \n- Confirms the message indicates that the product was **not found**\n    \n\nThis ensures the API handles missing resources correctly.\n\n---\n\n### Unexpected Status Handling\n\n- Any response status code other than **200** or **404** will cause the test to fail.\n    \n- This helps detect unexpected or incorrect API behavior.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- Product deletion is processed correctly.\n    \n- Deletion metadata is accurate and valid.\n    \n- Proper error responses are returned for non-existent products.\n    \n- Unexpected API responses are caught early.\n    \n\n---\n\n### Notes\n\n- The response body is parsed using `pm.response.json()`.\n    \n- Date validation is performed using JavaScript `Date` objects.\n    \n- Designed to validate delete operations in CRUD workflows."
@@ -1144,6 +1102,61 @@
               ]
             },
             "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate the **API’s error handling for a non-existent or invalid user**.\n\n---\n\n### Error Message Validation\n\n- Parses the response body using `pm.response.json()`.\n    \n- Ensures that the `message` field contains the text `\"not found\"` (case-insensitive).\n    \n- Confirms that the API provides a meaningful explanation for the error.\n    \n\n---\n\n### Invalid User Status Validation\n\n- Verifies that the API response returns **HTTP 404 Not Found**.\n    \n- Ensures that the response includes a `message` property indicating the failure.\n    \n\n---\n\n### Purpose\n\nThese tests ensure that:\n\n- The API correctly handles requests for users that do not exist.\n    \n- Proper HTTP status codes are returned.\n    \n- Meaningful error messages are provided to clients.\n    \n\n---\n\n### Notes\n\n- Tests will fail if:\n    \n    - Status code is not **404**.\n        \n    - The `message` field is missing or does not include `\"not found\"`.\n        \n- Designed to validate **negative scenarios** and **error responses** for user endpoints."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "BUG",
+      "item": [
+        {
+          "name": "invalid  prices",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let res = pm.response.json();\r",
+                  "\r",
+                  "// جلب الحالة المتوقعة من ملف الـ CSV\r",
+                  "var expectedStatus = parseInt(pm.iterationData.get(\"expectedStatus\"));\r",
+                  "var testCaseName = pm.iterationData.get(\"testCase\");\r",
+                  "\r",
+                  "pm.test(\"Status code is \" + expectedStatus + \" for case: \" + testCaseName, function () {\r",
+                  "    pm.response.to.have.status(expectedStatus);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Test Product\",\r\n  \"price\": {{price}}\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "add"
+              ]
+            },
+            "description": "## Request Tests Documentation\n\nThis request includes automated tests to validate that the API rejects string price values during product creation.\n\n---\n\n### Status Code Validation\n\n• Ensures the API does not return 200 OK or 201 Created for invalid price input.  \n• Confirms the request is properly rejected.\n\n---\n\n### Purpose\n\nThese tests ensure that:  \n• String prices are not accepted.  \n• Business rules are enforced.  \n• Invalid data does not result in a successful response.\n\n---\n\n### Notes\n\n• Status code is accessed using pm.response.code.  \n• The test fails if the API accepts a negative price.  \n• Designed for negative testing scenarios."
           },
           "response": []
         }
