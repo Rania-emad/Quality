@@ -1,0 +1,5 @@
+testCase,price,expectedStatus
+Null Price,null,400
+Negative Price,-100,400
+String Price,"""abc""",400
+ Zero Price,0,400
